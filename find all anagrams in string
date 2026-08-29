@@ -1,0 +1,97 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> result = new ArrayList<>();
+
+        // If p is longer than s, no anagram is possible
+        if (p.length() > s.length()) {
+            return result;
+        }
+
+        int[] need = new int[26];
+        int[] window = new int[26];
+
+        // Count characters in p
+        for (char c : p.toCharArray()) {
+            need[c - 'a']++;
+        }
+
+        int windowSize = p.length();
+
+        // Build the first window
+        for (int i = 0; i < windowSize; i++) {
+            window[s.charAt(i) - 'a']++;
+        }
+
+        // Check the first window
+        if (Arrays.equals(need, window)) {
+            result.add(0);
+        }
+
+        // Slide the window through s
+        for (int right = windowSize; right < s.length(); right++) {
+
+            // Add the new character
+            window[s.charAt(right) - 'a']++;
+
+            // Remove the character leaving the window
+            int left = right - windowSize;
+            window[s.charAt(left) - 'a']--;
+
+            // If frequencies match, it's an anagram
+            if (Arrays.equals(need, window)) {
+                result.add(left + 1);
+            }
+        }
+
+        return result;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        System.out.println(
+            solution.findAnagrams("cbaebabacd", "abc")
+        );
+        // [0, 6]
+
+        System.out.println(
+            solution.findAnagrams("abab", "ab")
+        );
+        // [0, 1, 2]
+
+        System.out.println(
+            solution.findAnagrams("a", "a")
+        );
+        // [0]
+
+        System.out.println(
+            solution.findAnagrams("a", "b")
+        );
+        // []
+
+        System.out.println(
+            solution.findAnagrams("aa", "a")
+        );
+        // [0, 1]
+
+        System.out.println(
+            solution.findAnagrams("aaaaa", "aa")
+        );
+        // [0, 1, 2, 3]
+
+        System.out.println(
+            solution.findAnagrams("abcdef", "abc")
+        );
+        // [0]
+
+        System.out.println(
+            solution.findAnagrams("abababab", "aab")
+        );
+        // [0, 2, 4]
+    }
+}
+
